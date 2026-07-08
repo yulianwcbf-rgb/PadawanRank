@@ -73,6 +73,12 @@ export function newId() {
   if (typeof crypto !== 'undefined' && crypto.randomUUID) {
     return crypto.randomUUID();
   }
+  if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
+    const bytes = new Uint8Array(8);
+    crypto.getRandomValues(bytes);
+    return `id_${Date.now().toString(36)}_${Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('')}`;
+  }
+  // Last-resort fallback for environments without any crypto API
   return `id_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`;
 }
 
